@@ -1,0 +1,75 @@
+# Copper Kingdom Configuration
+# Configure weapon properties, crafting recipes, and enchantment roll rates
+
+weapons:
+  copper_sword:
+    base_damage: 7.0
+    base_durability: 75
+    material: COPPER_INGOT
+    display_name: "Copper Sword"
+    lore:
+      - "A sword forged from copper"
+      - "Low durability, but deadly when enchanted"
+  copper_axe:
+    base_damage: 9.0
+    base_durability: 90
+    material: COPPER_INGOT
+    display_name: "Copper Axe"
+    lore:
+      - "An axe forged from copper"
+      - "Effective against wood and enemies alike"
+  copper_pickaxe:
+    base_damage: 5.0
+    base_durability: 100
+    material: COPPER_INGOT
+    display_name: "Copper Pickaxe"
+    lore:
+      - "A pickaxe forged from copper"
+      - "Perfect for mining precious ores"
+
+# Enchantment roll chances (percentage 0-100)
+enchantments:
+  copper_sword:
+    high_durability: 10    # 10% chance for increased durability
+    poison_on_hit: 5       # 5% chance for poison effect on hit
+    bonus_damage: 15       # 15% chance for bonus damage
+  copper_axe:
+    high_durability: 8     # 8% chance for increased durability
+    poison_on_hit: 10      # 10% chance for poison effect on hit
+    bonus_damage: 12       # 12% chance for bonus damage
+  copper_pickaxe:
+    high_durability: 5     # 5% chance for increased durability
+    poison_on_hit: 0       # 0% chance for poison (pickaxes don't hit enemies)
+    bonus_damage: 10       # 10% chance for bonus damage
+
+# Enhanced properties when lucky rolls succeed
+enhancements:
+  high_durability_multiplier: 3.0   # 3x base durability
+  poison_duration: 60               # 3 seconds (60 ticks)
+  poison_amplifier: 1               # Poison II
+  bonus_damage_amount: 3.0          # +3 damage
+
+# Crafting recipe ingredients
+recipes:
+  copper_sword:
+    enabled: true
+    ingredients:
+      top: "COPPER_INGOT"
+      middle: "COPPER_INGOT"
+      bottom: "STICK"
+  copper_axe:
+    enabled: true
+    ingredients:
+      top_left: "COPPER_INGOT"
+      top_middle: "COPPER_INGOT"
+      middle_left: "COPPER_INGOT"
+      middle_middle: "STICK"
+      bottom_middle: "STICK"
+  copper_pickaxe:
+    enabled: true
+    ingredients:
+      top_left: "COPPER_INGOT"
+      top_middle: "COPPER_INGOT"
+      top_right: "COPPER_INGOT"
+      middle_middle: "STICK"
+      bottom_middle: "STICK"
