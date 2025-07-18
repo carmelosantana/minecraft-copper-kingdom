@@ -30,15 +30,15 @@ print_info() {
 check_plugin_status() {
     print_info "Checking plugin status..."
     
-    if [ -f "target/copper-kingdom-0.1.0.jar" ]; then
+    if [ -f "target/copper-kingdom-0.1.1 .jar" ]; then
         print_status "Plugin JAR exists"
-        print_info "Size: $(ls -lh target/copper-kingdom-0.1.0.jar | awk '{print $5}')"
-        print_info "Modified: $(ls -l target/copper-kingdom-0.1.0.jar | awk '{print $6, $7, $8}')"
+        print_info "Size: $(ls -lh target/copper-kingdom-0.1.1 .jar | awk '{print $5}')"
+        print_info "Modified: $(ls -l target/copper-kingdom-0.1.1 .jar | awk '{print $6, $7, $8}')"
     else
         print_warning "Plugin JAR not found. Run 'make package' first."
     fi
     
-    if [ -f "server/plugins/copper-kingdom-0.1.0.jar" ]; then
+    if [ -f "server/plugins/copper-kingdom-0.1.1 .jar" ]; then
         print_status "Plugin installed in server"
     else
         print_warning "Plugin not installed in server"
@@ -151,8 +151,8 @@ performance_test() {
         print_status "Build completed successfully"
         
         # Check JAR size
-        if [ -f "target/copper-kingdom-0.1.0.jar" ]; then
-            local size=$(stat -f%z "target/copper-kingdom-0.1.0.jar" 2>/dev/null || stat -c%s "target/copper-kingdom-0.1.0.jar" 2>/dev/null)
+        if [ -f "target/copper-kingdom-0.1.1 .jar" ]; then
+            local size=$(stat -f%z "target/copper-kingdom-0.1.1 .jar" 2>/dev/null || stat -c%s "target/copper-kingdom-0.1.1 .jar" 2>/dev/null)
             print_info "JAR size: ${size} bytes"
             
             if [ "$size" -gt 1048576 ]; then  # 1MB

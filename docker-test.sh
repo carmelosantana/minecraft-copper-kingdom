@@ -65,7 +65,7 @@ build_plugin() {
     
     mvn clean package -q
     
-    if [ ! -f "target/copper-kingdom-0.1.0.jar" ]; then
+    if [ ! -f "target/copper-kingdom-0.1.1 .jar" ]; then
         print_error "Plugin JAR not found after build"
         exit 1
     fi
