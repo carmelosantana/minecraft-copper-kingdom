@@ -27,6 +27,41 @@ weapons:
       - "A pickaxe forged from copper"
       - "Perfect for mining precious ores"
 
+# Armor configurations
+armor:
+  copper_helmet:
+    base_armor: 2.0
+    base_toughness: 0.0
+    base_durability: 50
+    display_name: "Copper Helmet"
+    lore:
+      - "A helmet forged from copper and leather"
+      - "Light protection with unique properties"
+  copper_chestplate:
+    base_armor: 5.0
+    base_toughness: 1.0
+    base_durability: 70
+    display_name: "Copper Chestplate"
+    lore:
+      - "A chestplate forged from copper and leather"
+      - "Balanced protection for adventurers"
+  copper_leggings:
+    base_armor: 4.0
+    base_toughness: 0.5
+    base_durability: 65
+    display_name: "Copper Leggings"
+    lore:
+      - "Leggings forged from copper and leather"
+      - "Flexible protection for your legs"
+  copper_boots:
+    base_armor: 1.0
+    base_toughness: 0.0
+    base_durability: 45
+    display_name: "Copper Boots"
+    lore:
+      - "Boots forged from copper and leather"
+      - "Swift and sturdy footwear"
+
 # Enchantment roll chances (percentage 0-100)
 enchantments:
   copper_sword:
@@ -41,6 +76,22 @@ enchantments:
     high_durability: 5     # 5% chance for increased durability
     poison_on_hit: 0       # 0% chance for poison (pickaxes don't hit enemies)
     bonus_damage: 10       # 10% chance for bonus damage
+  copper_helmet:
+    enhanced_protection: 8 # 8% chance for enhanced protection
+    speed_boost: 5         # 5% chance for speed boost
+    thorns_effect: 3       # 3% chance for thorns effect
+  copper_chestplate:
+    enhanced_protection: 12 # 12% chance for enhanced protection
+    speed_boost: 8          # 8% chance for speed boost
+    thorns_effect: 10       # 10% chance for thorns effect
+  copper_leggings:
+    enhanced_protection: 10 # 10% chance for enhanced protection
+    speed_boost: 12         # 12% chance for speed boost
+    thorns_effect: 5        # 5% chance for thorns effect
+  copper_boots:
+    enhanced_protection: 6  # 6% chance for enhanced protection
+    speed_boost: 15         # 15% chance for speed boost
+    thorns_effect: 2        # 2% chance for thorns effect
 
 # Enhanced properties when lucky rolls succeed
 enhancements:
@@ -48,6 +99,10 @@ enhancements:
   poison_duration: 60               # 3 seconds (60 ticks)
   poison_amplifier: 1               # Poison II
   bonus_damage_amount: 3.0          # +3 damage
+  enhanced_protection_multiplier: 1.5 # 1.5x base durability for armor
+  extra_protection_amount: 2.0      # +2 armor points
+  speed_boost_amount: 0.1           # +10% movement speed
+  thorns_level: 1                   # Thorns I level
 
 # Crafting recipe ingredients
 recipes:
@@ -73,3 +128,39 @@ recipes:
       top_right: "COPPER_INGOT"
       middle_middle: "STICK"
       bottom_middle: "STICK"
+  copper_helmet:
+    enabled: true
+    ingredients:
+      top_left: "COPPER_INGOT"
+      top_middle: "COPPER_INGOT"
+      top_right: "COPPER_INGOT"
+      middle_left: "LEATHER"
+      middle_right: "LEATHER"
+  copper_chestplate:
+    enabled: true
+    ingredients:
+      top_left: "COPPER_INGOT"
+      top_right: "COPPER_INGOT"
+      middle_left: "COPPER_INGOT"
+      middle_middle: "LEATHER"
+      middle_right: "COPPER_INGOT"
+      bottom_left: "COPPER_INGOT"
+      bottom_middle: "COPPER_INGOT"
+      bottom_right: "COPPER_INGOT"
+  copper_leggings:
+    enabled: true
+    ingredients:
+      top_left: "COPPER_INGOT"
+      top_middle: "COPPER_INGOT"
+      top_right: "COPPER_INGOT"
+      middle_left: "LEATHER"
+      middle_right: "LEATHER"
+      bottom_left: "COPPER_INGOT"
+      bottom_right: "COPPER_INGOT"
+  copper_boots:
+    enabled: true
+    ingredients:
+      top_left: "LEATHER"
+      top_right: "LEATHER"
+      middle_left: "COPPER_INGOT"
+      middle_right: "COPPER_INGOT"

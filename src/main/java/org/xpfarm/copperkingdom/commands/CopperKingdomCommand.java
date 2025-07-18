@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xpfarm.copperkingdom.CopperKingdom;
 import org.xpfarm.copperkingdom.items.CopperWeapons;
+import org.xpfarm.copperkingdom.items.CopperArmor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,30 +51,44 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length < 2) {
-            sender.sendMessage(Component.text("Usage: /copperkingdom give <weapon>", NamedTextColor.YELLOW));
+            sender.sendMessage(Component.text("Usage: /copperkingdom give <item>", NamedTextColor.YELLOW));
             sender.sendMessage(Component.text("Available weapons: ", NamedTextColor.AQUA)
                 .append(Component.text("copper_sword, copper_axe, copper_pickaxe", NamedTextColor.WHITE)));
+            sender.sendMessage(Component.text("Available armor: ", NamedTextColor.AQUA)
+                .append(Component.text("copper_helmet, copper_chestplate, copper_leggings, copper_boots", NamedTextColor.WHITE)));
             return true;
         }
 
-        CopperWeapons.WeaponType weaponType;
+        String itemName = args[1].toLowerCase();
+        ItemStack item = null;
+
+        // Try to create as weapon first
         try {
-            weaponType = CopperWeapons.WeaponType.valueOf("COPPER_" + args[1].toUpperCase());
+            CopperWeapons.WeaponType weaponType = CopperWeapons.WeaponType.valueOf("COPPER_" + itemName.toUpperCase().replace("COPPER_", ""));
+            item = CopperWeapons.createCopperWeapon(weaponType);
         } catch (IllegalArgumentException e) {
-            sender.sendMessage(Component.text("Invalid weapon type! Available weapons: ", NamedTextColor.RED)
-                .append(Component.text("copper_sword, copper_axe, copper_pickaxe", NamedTextColor.WHITE)));
+            // Try to create as armor
+            try {
+                CopperArmor.ArmorType armorType = CopperArmor.ArmorType.valueOf("COPPER_" + itemName.toUpperCase().replace("COPPER_", ""));
+                item = CopperArmor.createCopperArmor(armorType);
+            } catch (IllegalArgumentException e2) {
+                sender.sendMessage(Component.text("Invalid item type! Available items: ", NamedTextColor.RED));
+                sender.sendMessage(Component.text("Weapons: ", NamedTextColor.AQUA)
+                    .append(Component.text("copper_sword, copper_axe, copper_pickaxe", NamedTextColor.WHITE)));
+                sender.sendMessage(Component.text("Armor: ", NamedTextColor.AQUA)
+                    .append(Component.text("copper_helmet, copper_chestplate, copper_leggings, copper_boots", NamedTextColor.WHITE)));
+                return true;
+            }
+        }
+
+        if (item == null) {
+            sender.sendMessage(Component.text("Failed to create item! Check the configuration.", NamedTextColor.RED));
             return true;
         }
 
-        ItemStack weapon = CopperWeapons.createCopperWeapon(weaponType);
-        if (weapon == null) {
-            sender.sendMessage(Component.text("Failed to create weapon! Check the configuration.", NamedTextColor.RED));
-            return true;
-        }
-
-        player.getInventory().addItem(weapon);
+        player.getInventory().addItem(item);
         sender.sendMessage(Component.text("Given you a ", NamedTextColor.GREEN)
-            .append(Component.text(args[1].replace("_", " "), NamedTextColor.GOLD))
+            .append(Component.text(itemName.replace("_", " "), NamedTextColor.GOLD))
             .append(Component.text("!", NamedTextColor.GREEN)));
         
         return true;
@@ -98,14 +113,16 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
 
     private void showHelp(CommandSender sender) {
         sender.sendMessage(Component.text("=== Copper Kingdom Commands ===", NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("/copperkingdom give <weapon>", NamedTextColor.YELLOW)
-            .append(Component.text(" - Give yourself a copper weapon", NamedTextColor.GRAY)));
+        sender.sendMessage(Component.text("/copperkingdom give <item>", NamedTextColor.YELLOW)
+            .append(Component.text(" - Give yourself a copper item", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("/copperkingdom reload", NamedTextColor.YELLOW)
             .append(Component.text(" - Reload plugin configuration", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("/copperkingdom help", NamedTextColor.YELLOW)
             .append(Component.text(" - Show this help message", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("Available weapons: ", NamedTextColor.AQUA)
             .append(Component.text("copper_sword, copper_axe, copper_pickaxe", NamedTextColor.WHITE)));
+        sender.sendMessage(Component.text("Available armor: ", NamedTextColor.AQUA)
+            .append(Component.text("copper_helmet, copper_chestplate, copper_leggings, copper_boots", NamedTextColor.WHITE)));
     }
 
     @Override
@@ -121,11 +138,12 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
                 }
             }
         } else if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
-            // Second argument for give command - weapon types
-            List<String> weapons = Arrays.asList("copper_sword", "copper_axe", "copper_pickaxe");
-            for (String weapon : weapons) {
-                if (weapon.toLowerCase().startsWith(args[1].toLowerCase())) {
-                    completions.add(weapon);
+            // Second argument for give command - item types
+            List<String> items = Arrays.asList("copper_sword", "copper_axe", "copper_pickaxe", 
+                                             "copper_helmet", "copper_chestplate", "copper_leggings", "copper_boots");
+            for (String item : items) {
+                if (item.toLowerCase().startsWith(args[1].toLowerCase())) {
+                    completions.add(item);
                 }
             }
         }

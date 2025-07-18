@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.xpfarm.copperkingdom.CopperKingdom;
 import org.xpfarm.copperkingdom.items.CopperWeapons;
+import org.xpfarm.copperkingdom.items.CopperArmor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,6 +22,10 @@ public class CopperRecipes {
         registerCopperSwordRecipe(plugin);
         registerCopperAxeRecipe(plugin);
         registerCopperPickaxeRecipe(plugin);
+        registerCopperHelmetRecipe(plugin);
+        registerCopperChestplateRecipe(plugin);
+        registerCopperLeggingsRecipe(plugin);
+        registerCopperBootsRecipe(plugin);
     }
 
     private static void registerCopperSwordRecipe(CopperKingdom plugin) {
@@ -90,6 +95,98 @@ public class CopperRecipes {
         Bukkit.addRecipe(recipe);
         registeredRecipes.add(key);
         plugin.getLogger().info("Registered Copper Pickaxe recipe");
+    }
+
+    private static void registerCopperHelmetRecipe(CopperKingdom plugin) {
+        ConfigurationSection recipeConfig = plugin.getConfig().getConfigurationSection("recipes.copper_helmet");
+        if (recipeConfig == null || !recipeConfig.getBoolean("enabled", true)) {
+            return;
+        }
+
+        ItemStack copperHelmet = CopperArmor.createCopperArmor(CopperArmor.ArmorType.COPPER_HELMET);
+        if (copperHelmet == null) {
+            return;
+        }
+
+        NamespacedKey key = new NamespacedKey(plugin, "copper_helmet");
+        ShapedRecipe recipe = new ShapedRecipe(key, copperHelmet);
+        
+        recipe.shape("CCC", "L L", "   ");
+        recipe.setIngredient('C', Material.COPPER_INGOT);
+        recipe.setIngredient('L', Material.LEATHER);
+
+        Bukkit.addRecipe(recipe);
+        registeredRecipes.add(key);
+        plugin.getLogger().info("Registered Copper Helmet recipe");
+    }
+
+    private static void registerCopperChestplateRecipe(CopperKingdom plugin) {
+        ConfigurationSection recipeConfig = plugin.getConfig().getConfigurationSection("recipes.copper_chestplate");
+        if (recipeConfig == null || !recipeConfig.getBoolean("enabled", true)) {
+            return;
+        }
+
+        ItemStack copperChestplate = CopperArmor.createCopperArmor(CopperArmor.ArmorType.COPPER_CHESTPLATE);
+        if (copperChestplate == null) {
+            return;
+        }
+
+        NamespacedKey key = new NamespacedKey(plugin, "copper_chestplate");
+        ShapedRecipe recipe = new ShapedRecipe(key, copperChestplate);
+        
+        recipe.shape("C C", "CLC", "CCC");
+        recipe.setIngredient('C', Material.COPPER_INGOT);
+        recipe.setIngredient('L', Material.LEATHER);
+
+        Bukkit.addRecipe(recipe);
+        registeredRecipes.add(key);
+        plugin.getLogger().info("Registered Copper Chestplate recipe");
+    }
+
+    private static void registerCopperLeggingsRecipe(CopperKingdom plugin) {
+        ConfigurationSection recipeConfig = plugin.getConfig().getConfigurationSection("recipes.copper_leggings");
+        if (recipeConfig == null || !recipeConfig.getBoolean("enabled", true)) {
+            return;
+        }
+
+        ItemStack copperLeggings = CopperArmor.createCopperArmor(CopperArmor.ArmorType.COPPER_LEGGINGS);
+        if (copperLeggings == null) {
+            return;
+        }
+
+        NamespacedKey key = new NamespacedKey(plugin, "copper_leggings");
+        ShapedRecipe recipe = new ShapedRecipe(key, copperLeggings);
+        
+        recipe.shape("CCC", "L L", "C C");
+        recipe.setIngredient('C', Material.COPPER_INGOT);
+        recipe.setIngredient('L', Material.LEATHER);
+
+        Bukkit.addRecipe(recipe);
+        registeredRecipes.add(key);
+        plugin.getLogger().info("Registered Copper Leggings recipe");
+    }
+
+    private static void registerCopperBootsRecipe(CopperKingdom plugin) {
+        ConfigurationSection recipeConfig = plugin.getConfig().getConfigurationSection("recipes.copper_boots");
+        if (recipeConfig == null || !recipeConfig.getBoolean("enabled", true)) {
+            return;
+        }
+
+        ItemStack copperBoots = CopperArmor.createCopperArmor(CopperArmor.ArmorType.COPPER_BOOTS);
+        if (copperBoots == null) {
+            return;
+        }
+
+        NamespacedKey key = new NamespacedKey(plugin, "copper_boots");
+        ShapedRecipe recipe = new ShapedRecipe(key, copperBoots);
+        
+        recipe.shape("   ", "L L", "C C");
+        recipe.setIngredient('C', Material.COPPER_INGOT);
+        recipe.setIngredient('L', Material.LEATHER);
+
+        Bukkit.addRecipe(recipe);
+        registeredRecipes.add(key);
+        plugin.getLogger().info("Registered Copper Boots recipe");
     }
 
     public static void unregisterRecipes() {

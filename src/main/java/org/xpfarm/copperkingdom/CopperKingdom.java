@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.xpfarm.copperkingdom.commands.CopperKingdomCommand;
 import org.xpfarm.copperkingdom.events.CraftingListener;
 import org.xpfarm.copperkingdom.events.WeaponListener;
+import org.xpfarm.copperkingdom.events.ArmorListener;
 import org.xpfarm.copperkingdom.recipes.CopperRecipes;
 
 public final class CopperKingdom extends JavaPlugin {
@@ -23,6 +24,7 @@ public final class CopperKingdom extends JavaPlugin {
         // Register events
         getServer().getPluginManager().registerEvents(new CraftingListener(), this);
         getServer().getPluginManager().registerEvents(new WeaponListener(), this);
+        getServer().getPluginManager().registerEvents(new ArmorListener(), this);
         
         // Register commands
         getCommand("copperkingdom").setExecutor(new CopperKingdomCommand());
