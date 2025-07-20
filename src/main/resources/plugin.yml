@@ -2,14 +2,14 @@ name: CopperKingdom
 version: 0.1.1 
 main: org.xpfarm.copperkingdom.CopperKingdom
 api-version: '1.21'
-description: Copper-based weapons with unique properties and enchantment rolls
+description: Copper-based weapons with mythic lore mechanics including healing, grounding, and storm interactions
 author: Carmelo Santana
 website: xp.farm
 
 commands:
   copperkingdom:
     description: Main command for Copper Kingdom plugin
-    usage: /copperkingdom <give|reload> [args]
+    usage: /copperkingdom <give|blessed|test|reload|help> [args]
     aliases: [ck]
     permission: copperkingdom.use
 
@@ -18,7 +18,13 @@ permissions:
     description: Basic permission to use Copper Kingdom commands
     default: op
   copperkingdom.give:
-    description: Permission to give copper weapons
+    description: Permission to give copper weapons and armor
+    default: op
+  copperkingdom.blessed:
+    description: Permission to give blessed copper weapons
+    default: op
+  copperkingdom.test:
+    description: Permission to use test commands for lore mechanics
     default: op
   copperkingdom.reload:
     description: Permission to reload plugin configuration

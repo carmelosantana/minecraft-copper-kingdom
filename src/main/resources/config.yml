@@ -104,6 +104,38 @@ enhancements:
   speed_boost_amount: 0.1           # +10% movement speed
   thorns_level: 1                   # Thorns I level
 
+# 🌟 Lore-Driven Copper Mechanics
+copper_lore:
+  # Healing & Regeneration
+  healing:
+    sunrise_duration: 100           # Duration of sunrise regeneration (ticks)
+    sunrise_time_start: 23000       # Start time for sunrise effects
+    sunrise_time_end: 1000          # End time for sunrise effects
+    regeneration_level: 0           # Regeneration I (0-based)
+    cleanse_radius: 5               # Radius for blessed variants to cleanse poison/wither
+    cleanse_poison: true            # Remove poison effects
+    cleanse_wither: true            # Remove wither effects
+    blessed_weapon_chance: 5        # 5% chance for blessed variant during crafting
+
+  # Grounding & Plant Fertility
+  grounding:
+    copper_block_type: "COPPER_BLOCK" # Block type for grounding effects
+    resistance_radius: 5            # Radius for resistance effect near copper blocks
+    resistance_level: 0             # Resistance I (0-based)
+    crop_acceleration_radius: 3     # Radius for crop growth acceleration
+    crop_growth_bonus: 0.3          # 30% chance for bonus growth tick
+    buried_depth: 1                 # Blocks below ground level for "buried" copper
+
+  # Electric & Storm Mechanics
+  storm:
+    rain_bonus_multiplier: 1.2      # 20% bonus damage during rain
+    thunderstorm_bonus_multiplier: 1.5 # 50% bonus damage during thunderstorms
+    lightning_cooldown_seconds: 600 # 10 minute cooldown for lightning strikes
+    lightning_damage: 6.0           # Lightning strike damage
+    lightning_radius: 2             # Lightning effect radius
+    recharge_per_block_per_tick: 0.01 # Durability recharge rate near copper blocks
+    recharge_radius: 3              # Radius for durability recharge effect
+
 # Crafting recipe ingredients
 recipes:
   copper_sword:

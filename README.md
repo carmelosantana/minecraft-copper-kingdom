@@ -5,9 +5,10 @@ A Minecraft plugin that introduces copper-based weapons with unique properties a
 ## ✨ Features
 
 - **New Copper Weapons**: Copper Sword, Copper Axe, and Copper Pickaxe
+- **New Copper Armor**: Copper Helmet, Copper Chestplate, Copper Leggings, and Copper Boots
 - **Enchantment Roll System**: Random chances for special enchantments when crafting
-- **Custom Crafting Recipes**: Uses copper ingots and sticks
-- **Lucky Enhancements**: High durability, poison effects, and bonus damage
+- **Custom Crafting Recipes**: Uses copper ingots with sticks (weapons) or leather (armor)
+- **Lucky Enhancements**: High durability, poison effects, bonus damage, enhanced protection, speed boost, and thorns
 - **Configurable Properties**: Fully customizable via `config.yml`
 - **Developer Commands**: Easy testing and debugging tools
 
@@ -15,31 +16,99 @@ A Minecraft plugin that introduces copper-based weapons with unique properties a
 
 Each crafted copper weapon has configurable roll chances for special enhancements:
 
+### Weapon Enhancements
 - **High Durability**: 3x base durability (default 10% chance for swords)
 - **Poison on Hit**: Applies poison effect to enemies (default 5% chance for swords)
 - **Bonus Damage**: Additional attack damage (default 15% chance for swords)
 
+### Armor Enhancements  
+- **Enhanced Protection**: 1.5x base durability + extra armor points (default 8-12% chance)
+- **Speed Boost**: Temporary speed effect when taking damage (default 5-15% chance)
+- **Thorns Effect**: Reflects damage back to attackers (default 2-10% chance)
+
+## 🌟 Mythic Copper Lore Mechanics
+
+The Copper Kingdom now embraces ancient magic, grounding, and healing lore that activates under specific conditions:
+
+### ⚕️ Healing & Regeneration
+
+- **Sunrise Regeneration**: Players holding copper weapons receive Regeneration I during sunrise (23000-1000 world time)
+- **Blessed Variants**: 5% chance when crafting to create blessed weapons that cleanse poison and wither from nearby allies (5-block radius)
+- **Ancient Healing**: Blessed copper weapons provide protective aura to teammates
+
+### 🌍 Grounding & Earth Connection
+
+- **Copper Block Resistance**: Standing within 5 blocks of copper blocks while holding copper weapons grants Resistance I
+- **Crop Fertility**: Buried copper blocks (underground) accelerate crop growth within 3-block radius by 30%
+- **Earth Grounding**: Copper weapons recharge durability slowly when near copper blocks (0.01 per tick chance)
+
+### ⛈️ Storm & Lightning Mastery
+
+- **Storm Bonus**: 20% extra damage during rain, 50% extra damage during thunderstorms
+- **Lightning Strike**: Right-click with copper weapons to strike lightning at target location (10-minute cooldown)
+- **Electric Conductivity**: Lightning strikes deal 6 damage in 2-block radius
+- **Storm Recharge**: Copper tools near copper blocks restore durability faster during storms
+
 ## 🧱 Crafting Recipes
 
-### Copper Sword
+### Weapons
+
+#### Copper Sword
+
 ```
 [Copper Ingot]  
 [Copper Ingot]  
 [Stick]         
 ```
 
-### Copper Axe
+#### Copper Axe
+
 ```
 [Copper Ingot][Copper Ingot]  
 [Copper Ingot][Stick]         
 [        ][Stick]         
 ```
 
-### Copper Pickaxe
+#### Copper Pickaxe
+
 ```
 [Copper Ingot][Copper Ingot][Copper Ingot]  
 [        ][Stick][        ]  
 [        ][Stick][        ]  
+```
+
+### Armor
+
+#### Copper Helmet
+
+```
+[Copper Ingot][Copper Ingot][Copper Ingot]  
+[Leather     ][           ][Leather     ]  
+[            ][           ][            ]  
+```
+
+#### Copper Chestplate
+
+```
+[Copper Ingot][           ][Copper Ingot]  
+[Copper Ingot][Leather    ][Copper Ingot]  
+[Copper Ingot][Copper Ingot][Copper Ingot]  
+```
+
+#### Copper Leggings
+
+```
+[Copper Ingot][Copper Ingot][Copper Ingot]  
+[Leather     ][           ][Leather     ]  
+[Copper Ingot][           ][Copper Ingot]  
+```
+
+#### Copper Boots
+
+```
+[            ][           ][            ]  
+[Leather     ][           ][Leather     ]  
+[Copper Ingot][           ][Copper Ingot]  
 ```
 
 ## 🛠️ Installation
@@ -81,16 +150,28 @@ make test-commands  # Show plugin test commands
 ## 🎮 Commands
 
 ### Player Commands
-- `/copperkingdom give <weapon>` - Give yourself a copper weapon
+
+- `/copperkingdom give <item>` - Give yourself a copper weapon or armor piece
 - `/copperkingdom help` - Show command help
 
 ### Admin Commands
+
+- `/copperkingdom blessed <weapon>` - Give yourself a blessed copper weapon
+- `/copperkingdom test <type>` - Test lore mechanics (copperblocks, storm, lightning)
 - `/copperkingdom reload` - Reload plugin configuration
 
 ### Available Weapons
+
 - `copper_sword` - Copper sword with enchantment rolls
 - `copper_axe` - Copper axe with enchantment rolls
 - `copper_pickaxe` - Copper pickaxe with enchantment rolls
+
+### Available Armor
+
+- `copper_helmet` - Copper helmet with enchantment rolls
+- `copper_chestplate` - Copper chestplate with enchantment rolls
+- `copper_leggings` - Copper leggings with enchantment rolls
+- `copper_boots` - Copper boots with enchantment rolls
 
 ## ⚙️ Configuration
 
@@ -121,8 +202,8 @@ enhancements:
 1. Start the server: `make start`
 2. Connect to `localhost:25565`
 3. Get materials: `/give @p minecraft:copper_ingot 64`
-4. Get sticks: `/give @p minecraft:stick 64`
-5. Craft weapons or use: `/copperkingdom give copper_sword`
+4. Get crafting materials: `/give @p minecraft:stick 64` and `/give @p minecraft:leather 64`
+5. Craft weapons and armor or use: `/copperkingdom give copper_sword` or `/copperkingdom give copper_helmet`
 
 ### Automated Testing
 ```bash
@@ -201,7 +282,7 @@ This project follows the same license as the parent repository.
 
 ## 🏷️ Version
 
-Current version: 1.0.0
+Current version: 0.1.1 
 
 Compatible with:
 - Minecraft Java Edition 1.21+

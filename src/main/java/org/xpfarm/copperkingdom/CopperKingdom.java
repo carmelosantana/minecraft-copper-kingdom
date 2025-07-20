@@ -5,6 +5,7 @@ import org.xpfarm.copperkingdom.commands.CopperKingdomCommand;
 import org.xpfarm.copperkingdom.events.CraftingListener;
 import org.xpfarm.copperkingdom.events.WeaponListener;
 import org.xpfarm.copperkingdom.events.ArmorListener;
+import org.xpfarm.copperkingdom.events.CopperLoreListener;
 import org.xpfarm.copperkingdom.recipes.CopperRecipes;
 
 public final class CopperKingdom extends JavaPlugin {
@@ -25,6 +26,7 @@ public final class CopperKingdom extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CraftingListener(), this);
         getServer().getPluginManager().registerEvents(new WeaponListener(), this);
         getServer().getPluginManager().registerEvents(new ArmorListener(), this);
+        getServer().getPluginManager().registerEvents(new CopperLoreListener(this), this);
         
         // Register commands
         getCommand("copperkingdom").setExecutor(new CopperKingdomCommand());
