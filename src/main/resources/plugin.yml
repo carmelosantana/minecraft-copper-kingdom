@@ -1,5 +1,5 @@
 name: CopperKingdom
-version: 0.1.1 
+version: '${project.version}'
 main: org.xpfarm.copperkingdom.CopperKingdom
 api-version: '1.21'
 description: Copper-based weapons with mythic lore mechanics including healing, grounding, and storm interactions

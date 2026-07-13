@@ -1,6 +1,6 @@
 # 🏰 Copper Kingdom
 
-A Minecraft plugin that introduces copper-based weapons with unique properties and enchantment rolls. Designed for Paper 1.21.6+, the plugin focuses on low durability, high-damage copper gear, with chances for rare lucky enhancements.
+A Minecraft plugin that introduces copper-based weapons with unique properties and enchantment rolls. Designed for Paper 26.1.2+, the plugin focuses on low durability, high-damage copper gear, with chances for rare lucky enhancements.
 
 ## ✨ Features
 
@@ -121,7 +121,7 @@ The Copper Kingdom now embraces ancient magic, grounding, and healing lore that 
 ## 🏗️ Building from Source
 
 Requirements:
-- Java 21+
+- Java 25+
 - Maven 3.6+
 - Docker (optional, for testing)
 
@@ -238,7 +238,7 @@ make docker-test    # Run automated Docker tests
 ```
 
 The Docker setup includes:
-- Paper 1.21.6 server
+- Paper 26.1.2 server
 - Geyser + Floodgate for Bedrock compatibility
 - ViaVersion for cross-version support
 - Automatic plugin installation
@@ -262,7 +262,7 @@ make validate       # Run linting and tests
 
 ## 📦 Dependencies
 
-- **Paper API**: 1.21.6-R0.1-SNAPSHOT
+- **Paper API**: 26.1.2 build 74 stable
 - **Java**: 21+
 - **Maven**: 3.6+
 
@@ -286,8 +286,8 @@ Current version: 0.1.1
 
 Compatible with:
 - Minecraft Java Edition 1.21+
-- Paper 1.21.6+
-- Java 21+
+- Paper 26.1.2+
+- Java 25+
 
 ---
 
