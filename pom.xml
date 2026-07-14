@@ -9,6 +9,14 @@
     <version>0.2.0</version>
     <packaging>jar</packaging>
 
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License v3.0 or later</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <name>CopperKingdom</name>
     <description>Copper-based weapons with unique properties and enchantment rolls</description>
     <url>xp.farm</url>

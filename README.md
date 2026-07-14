@@ -278,7 +278,7 @@ Follow the development standards in `CONTRIBUTING-ai-plugin-dev.md`.
 
 ## 📄 License
 
-This project follows the same license as the parent repository.
+This project is licensed under the [GNU Affero General Public License v3.0 or later](LICENSE).
 
 ## 🏷️ Version
 
