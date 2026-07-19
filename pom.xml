@@ -19,7 +19,7 @@
 
     <name>CopperKingdom</name>
     <description>Copper-based weapons with unique properties and enchantment rolls</description>
-    <url>xp.farm</url>
+    <url>https://xpfarm.org</url>
 
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
