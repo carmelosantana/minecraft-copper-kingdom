@@ -26,9 +26,9 @@ Accordingly:
 
 - **Gate 7a carries real evidence**, produced by the docker-rig-consolidation effort's shared test
   rig. It is quoted verbatim below from
-  `minecraft-plugin-docs/.superpowers/sdd/task-6-report.md`.
+  `xpfarm-plugin-toolkit/.superpowers/sdd/task-6-report.md`.
 - **Gate 7b cites a real recorded run** (the 2026-07-19 ecosystem matrix) that lives in
-  `minecraft-plugin-docs/CURRENT_STATE.md`. It was not re-run for this backfill.
+  `xpfarm-plugin-toolkit/CURRENT_STATE.md`. It was not re-run for this backfill.
 - Everything else is either an **observed fact** (something readable in the repo or manifest today,
   with the place it was read stated) or is marked **NOT RECORDED / NOT RUN / UNKNOWN**.
 - An **observed fact is not a passed gate**. A checkbox is ticked only where a gate criterion is
@@ -42,7 +42,7 @@ Accordingly:
 - [ ] Status is explicitly recorded as active, experimental, or excluded. **NOT RECORDED at the
       time.** `active` is asserted here from the plugin's presence in the updater manifest
       (`minecraft-plugin-updater/plugins.json`) and in the Active Plugin Releases table of
-      `minecraft-plugin-docs/CURRENT_STATE.md`. No scoping decision was ever written down.
+      `xpfarm-plugin-toolkit/CURRENT_STATE.md`. No scoping decision was ever written down.
 - [ ] Purpose, commands, events, permissions, configuration, persistence, and acceptance checks are
       defined. **NOT RECORDED — predates the checklist process.** No requirements interview was
       run and no acceptance checks were ever defined for any released version. The command and
@@ -121,7 +121,7 @@ POM. Which one wins was **not investigated** here.
 - [x] Java 25/Paper 26.1.2 build 74 compile succeeds and `plugin.yml` uses `api-version: '1.21'`.
       **Real evidence.** The shared-rig migration ran `mvn clean verify` on this repo: "Maven
       `clean verify` → BUILD SUCCESS, produced `target/copper-kingdom-0.2.1.jar`"
-      (`minecraft-plugin-docs/.superpowers/sdd/task-6-report.md`). `pom.xml` depends on
+      (`xpfarm-plugin-toolkit/.superpowers/sdd/task-6-report.md`). `pom.xml` depends on
       `io.papermc.paper:paper-api:26.1.2.build.74-stable` (`provided`); `plugin.yml` declares
       `api-version: '1.21'`.
 - [x] Hard dependencies, soft dependencies, optional APIs, and load ordering were reviewed and
@@ -164,9 +164,9 @@ POM. Which one wins was **not investigated** here.
 
 ### 7a — single-plugin runtime verification — PARTIAL (real evidence, narrow scope)
 
-Evidence source: **this effort's shared test rig** (`minecraft-plugin-docs/bin/xpfarm-test-stack`),
+Evidence source: **this effort's shared test rig** (`xpfarm-plugin-toolkit/bin/xpfarm-test-stack`),
 a disposable fresh-volume Legendary stack, recorded verbatim in
-`minecraft-plugin-docs/.superpowers/sdd/task-6-report.md`. That report does not state its own date;
+`xpfarm-plugin-toolkit/.superpowers/sdd/task-6-report.md`. That report does not state its own date;
 the sibling `task-4-report.md` dates the same consolidation effort **2026-07-20**.
 
 - [x] Paper, Geyser, Floodgate, and ViaVersion start successfully together, with the plugin loaded
@@ -219,7 +219,7 @@ the sibling `task-4-report.md` dates the same consolidation effort **2026-07-20*
 `docker-compose.yml` bind-mounted `./target/copper-kingdom-0.1.1 .jar` — with a **space before
 `.jar`**. Docker silently creates an empty *directory* at a missing bind-mount source, so the
 plugin was never delivered and the stack still came up looking healthy. Per
-`minecraft-plugin-docs/CURRENT_STATE.md` that typo dates to **2025-07-18** and "survived roughly
+`xpfarm-plugin-toolkit/CURRENT_STATE.md` that typo dates to **2025-07-18** and "survived roughly
 twelve months". Any local "it works" impression formed from that compose file between then and the
 2026-07-20 rig migration was worthless. The compose file has since been deleted in favour of
 `scripts/test-stack.sh`, which mounts the newest `target/*.jar` and **asserts** the plugin is
@@ -227,7 +227,7 @@ enabled.
 
 ### 7b — ten-plugin ecosystem matrix — PASSED, but recorded elsewhere and not re-run here
 
-Not run by this backfill. `minecraft-plugin-docs/CURRENT_STATE.md` records an
+Not run by this backfill. `xpfarm-plugin-toolkit/CURRENT_STATE.md` records an
 **Ecosystem Matrix Run (2026-07-19) — PASSED 11/11** on a fresh-volume Legendary stack, installing
 every plugin through the one-shot updater from published release assets. Its row for this plugin:
 
@@ -250,7 +250,7 @@ it too proves coexistence, not correct in-game behavior.
       `mvn --batch-mode --no-transfer-progress clean verify`; writes bare-filename `SHA256SUMS.txt`;
       and uploads release assets only for `refs/tags/v`.
 - [ ] Successful main Actions run is recorded before tagging. **NOT RECORDED per release in this
-      repository.** `minecraft-plugin-docs/CURRENT_STATE.md` states that "The tag and `main`-branch
+      repository.** `xpfarm-plugin-toolkit/CURRENT_STATE.md` states that "The tag and `main`-branch
       GitHub Actions runs observed on `2026-07-19` were successful for all ten repositories", which
       covers this repo at `v0.2.1` — but that is an ecosystem-wide observation of *outcome*, not a
       record that a green `main` run *preceded* each tag. The ordering was never recorded here.
@@ -314,7 +314,7 @@ either is the mechanical path, but no rollback has ever been rehearsed for this 
 ## 12. Handoff — PARTIAL
 
 - [ ] Current-state documentation refreshed with release, CI, updater, deployment, and local
-      pending state. **NOT DONE by this backfill** — `minecraft-plugin-docs/CURRENT_STATE.md` was
+      pending state. **NOT DONE by this backfill** — `xpfarm-plugin-toolkit/CURRENT_STATE.md` was
       deliberately left untouched. It already flags this repo as one of four carrying no gate 7a
       checklist record; that flag is now stale in this repo's favour and should be updated by
       whoever owns that document.
