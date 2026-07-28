@@ -87,6 +87,17 @@ online player names at the target position for `give` and `blessed`.
   the cross-player received-a-gift notification, and tab-completion of online names — no client
   joins this headless stack by design. These are the only behaviors this change adds that a client
   is required to observe.
+- **Gate 8b/9 (CI + release).** Merged to `main` (fast-forward `7309bcf..87a4b9d`); the main-branch
+  Actions run for that commit was **green before tagging** (`completed/success`, run 30381575631).
+  Tagged `v0.3.0` on that exact commit; the tag run built and published the release
+  (`completed/success`, run 30381673210). Release `v0.3.0` is non-draft, non-prerelease, with
+  exactly two assets — `copper-kingdom-0.3.0.jar` (matches updater regex
+  `^copper-kingdom-[0-9].*\.jar$`) and `SHA256SUMS.txt`, **no `original-*` JAR** — and
+  `sha256sum --check SHA256SUMS.txt` reported `copper-kingdom-0.3.0.jar: OK`.
+- **Known pre-existing gap carried forward (NOT introduced by this change):** the full
+  plugin-wide Geyser/Floodgate/ViaVersion Bedrock-safety review (§4, third box) was never done for
+  `0.2.1` and is still not done — only the new give/blessed target path was reviewed (hence
+  `PlayerLookup`). This release does not close that gap; it remains a gate-4/gate-12 follow-up.
 
 ## 1. Scope — NOT RECORDED
 
@@ -340,33 +351,32 @@ log line. Stack torn down with `matrix down`; lease released, no orphaned contai
       and `workflow_dispatch`; builds with `temurin` Java `25`; runs
       `mvn --batch-mode --no-transfer-progress clean verify`; writes bare-filename `SHA256SUMS.txt`;
       and uploads release assets only for `refs/tags/v`.
-- [ ] Successful main Actions run is recorded before tagging. **NOT RECORDED per release in this
-      repository.** `xpfarm-plugin-toolkit/CURRENT_STATE.md` states that "The tag and `main`-branch
-      GitHub Actions runs observed on `2026-07-19` were successful for all ten repositories", which
-      covers this repo at `v0.2.1` — but that is an ecosystem-wide observation of *outcome*, not a
-      record that a green `main` run *preceded* each tag. The ordering was never recorded here.
+- [x] Successful main Actions run is recorded before tagging. **RECORDED for `v0.3.0`
+      (2026-07-28).** The main-branch run for commit `87a4b9d` completed `success` (run
+      30381575631) and was confirmed green via `gh run list` **before** the `v0.3.0` tag was
+      created and pushed — the ordering the box requires. (For `v0.2.1` and earlier this ordering
+      was never recorded; only the `v0.3.0` release carries this evidence.)
 - [x] Workflow permissions contain no broader access than the documented contract. **Observed:**
       the workflow declares exactly `permissions: contents: write` at the top level, with no
       job-level escalation, and the only token used is `GH_TOKEN: ${{ github.token }}` for
       `gh release`. This is the same block as every sibling repo (identical file).
 
-## 9. Release — `v0.2.1` published; asset verification NOT RE-DONE here
+## 9. Release — `v0.3.0` published and fully verified 2026-07-28
 
-- [x] Semantic version matches the POM, plugin metadata, and `v<version>` tag. **Observed:**
-      `pom.xml` `<version>0.2.1</version>`; the newest tag in this clone is `v0.2.1`;
-      `plugin.yml` uses `version: '${project.version}'`, so it cannot drift from the POM.
-      Tags present: `v0.1.1`, `v0.2.0`, `v0.2.1`.
-- [x] Successful tag Actions run and GitHub release are recorded. **Cited, not re-verified.**
-      `CURRENT_STATE.md` lists Copper Kingdom at release `v0.2.1` and records successful tag and
-      `main` runs observed on 2026-07-19. GitHub was not queried for this backfill.
-- [ ] Release contains exactly one updater-matching JAR plus `SHA256SUMS.txt` and no `original-*`
-      JAR. **NOT VERIFIED here.** The published assets were not downloaded or listed. Indirect
-      support only: the workflow's `! -name 'original-*'` filters, and the matrix run's report that
-      each installed JAR's SHA-256 matched its published digest.
-- [ ] Downloaded release assets pass `sha256sum --check SHA256SUMS.txt`. **NOT RUN here.** See the
-      matrix-run checksum note above for the nearest existing evidence.
+- [x] Semantic version matches the POM, plugin metadata, and `v<version>` tag. **Verified for
+      `v0.3.0`:** `pom.xml` `<version>0.3.0</version>`; tag `v0.3.0` created on commit `87a4b9d`;
+      `plugin.yml` uses `version: '${project.version}'`, and the release JAR's embedded `plugin.yml`
+      resolves to `0.3.0`. Tags present: `v0.1.1`, `v0.2.0`, `v0.2.1`, `v0.3.0`.
+- [x] Successful tag Actions run and GitHub release are recorded. **Verified via GitHub:** tag run
+      30381673210 completed `success`; release `v0.3.0` is non-draft, non-prerelease, authored by
+      `github-actions[bot]`.
+- [x] Release contains exactly one updater-matching JAR plus `SHA256SUMS.txt` and no `original-*`
+      JAR. **Verified:** `gh release download v0.3.0` produced exactly `copper-kingdom-0.3.0.jar`
+      (matches `^copper-kingdom-[0-9].*\.jar$`) and `SHA256SUMS.txt` — no `original-*` present.
+- [x] Downloaded release assets pass `sha256sum --check SHA256SUMS.txt`. **Verified:**
+      `copper-kingdom-0.3.0.jar: OK`.
 
-## 10. Updater — enrolled (observed); behaviors NOT RUN
+## 10. Updater — enrolled; v0.3.0 pickup dry-run verified 2026-07-28
 
 - [x] Updater manifest covers repository, destination, anchored asset regex, legacy globs, enabled
       state, and optional pin. **Observed** in `minecraft-plugin-updater/plugins.json`:
@@ -376,15 +386,24 @@ log line. Stack torn down with `matrix down`; lease released, no orphaned contai
       ```
 
       The regex is anchored at both ends. `enabled` is **absent, which means true**. There is **no
-      version pin**. No manifest change is proposed by this backfill.
+      version pin** — the entry follows the latest non-prerelease release, so **`v0.3.0` is picked
+      up with no manifest change**. `plugins.json` re-validated (`python3 -m json.tool`) and the
+      updater's own suite passed (`python3 -m unittest discover -s tests` → 11 tests OK). No
+      manifest commit was made or needed this pass.
 - [ ] Fresh install, upgrade, no-op, legacy archival, endpoint failure, and checksum failure
-      behaviors pass. **NOT RUN for this plugin.** The 2026-07-19 matrix exercised *fresh install*
-      of this entry as a side effect; the other five behaviors were never tested per-plugin.
-- [ ] Updater dry-run uses a disposable directory and never a production plugin directory.
-      **NOT RUN.**
+      behaviors pass. **PARTIAL.** *Fresh install* confirmed for this entry via the disposable
+      dry-run below — `[plugin-updater] Copper Kingdom: would install v0.3.0`, no checksum/download
+      error. The install/no-op/backup/legacy-archival/checksum branches are covered generically by
+      the updater's 11 passing unit tests, but the five non-fresh-install behaviors were **not
+      injected per-plugin** for this entry this pass.
+- [x] Updater dry-run uses a disposable directory and never a production plugin directory.
+      **DONE.** `python3 updater.py --manifest plugins.json --plugins-dir
+      /tmp/minecraft-plugin-updater-dry-run --dry-run`; the production `/minecraft` volume was never
+      referenced. Result: Copper Kingdom would install `v0.3.0`; run ended `all managed plugins are
+      current`.
 - [ ] Failure retains the installed JAR and default fail-open behavior permits Minecraft startup.
-      **NOT RUN for this plugin.** Fail-open is a documented property of the updater
-      (`CURRENT_STATE.md`), not something tested against this entry.
+      **NOT re-run per-plugin.** Fail-open is a documented updater property and is exercised by the
+      updater's unit suite, not injected against this specific entry this pass.
 
 ## 11. Deployment — NOT RECORDED
 
