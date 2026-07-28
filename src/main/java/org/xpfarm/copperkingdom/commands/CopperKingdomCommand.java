@@ -2,6 +2,7 @@ package org.xpfarm.copperkingdom.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.xpfarm.copperkingdom.CopperKingdom;
 import org.xpfarm.copperkingdom.items.CopperWeapons;
 import org.xpfarm.copperkingdom.items.CopperArmor;
+import org.xpfarm.copperkingdom.util.PlayerLookup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,17 +53,20 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("This command can only be used by players!", NamedTextColor.RED));
-            return true;
-        }
-
         if (args.length < 2) {
-            sender.sendMessage(Component.text("Usage: /copperkingdom give <item>", NamedTextColor.YELLOW));
+            sender.sendMessage(Component.text("Usage: /copperkingdom give <item> [player]", NamedTextColor.YELLOW));
             sender.sendMessage(Component.text("Available weapons: ", NamedTextColor.AQUA)
                 .append(Component.text("copper_sword, copper_axe, copper_pickaxe", NamedTextColor.WHITE)));
             sender.sendMessage(Component.text("Available armor: ", NamedTextColor.AQUA)
                 .append(Component.text("copper_helmet, copper_chestplate, copper_leggings, copper_boots", NamedTextColor.WHITE)));
+            return true;
+        }
+
+        // Resolve who receives the item: the sender (self-give) or a named target. When
+        // an explicit target is present the sender may be the console; without one, the
+        // console gets a friendly instruction rather than an exception.
+        Player recipient = resolveRecipient(sender, args, 2, "Usage: /copperkingdom give <item> <player>");
+        if (recipient == null) {
             return true;
         }
 
@@ -92,12 +97,90 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        player.getInventory().addItem(item);
-        sender.sendMessage(Component.text("Given you a ", NamedTextColor.GREEN)
-            .append(Component.text(itemName.replace("_", " "), NamedTextColor.GOLD))
-            .append(Component.text("!", NamedTextColor.GREEN)));
-        
+        recipient.getInventory().addItem(item);
+        announceGift(sender, recipient, itemName.replace("_", " "));
+
         return true;
+    }
+
+    /**
+     * The three ways a give-style subcommand can pick a recipient, decided purely from
+     * whether the sender is a player and whether an explicit target argument was supplied.
+     */
+    enum RecipientMode {
+        /** No target argument and a player sender: give to the sender. */
+        SELF,
+        /** A target argument is present: resolve and give to that named player. */
+        RESOLVE_TARGET,
+        /** No target argument and a console sender: nobody to give to. */
+        CONSOLE_NEEDS_TARGET
+    }
+
+    /**
+     * Decides how a give-style subcommand should pick its recipient. Pure and Bukkit-free
+     * so the console/self/target branching can be unit tested without a running server.
+     *
+     * @param senderIsPlayer whether the command sender is an in-game player
+     * @param hasTargetArg   whether an explicit target-player argument was supplied
+     */
+    static RecipientMode recipientMode(boolean senderIsPlayer, boolean hasTargetArg) {
+        if (hasTargetArg) {
+            return RecipientMode.RESOLVE_TARGET;
+        }
+        return senderIsPlayer ? RecipientMode.SELF : RecipientMode.CONSOLE_NEEDS_TARGET;
+    }
+
+    /**
+     * Resolves the recipient for a give-style subcommand, messaging the sender and
+     * returning {@code null} when no recipient can be determined (unknown target, or a
+     * console sender that supplied no target).
+     *
+     * @param sender         the command sender
+     * @param args           the full argument array
+     * @param targetArgIndex the index at which an optional target name would appear
+     * @param consoleUsage   the usage line shown to a console sender with no target
+     * @return the resolved recipient, or {@code null} (a message has already been sent)
+     */
+    private Player resolveRecipient(CommandSender sender, String[] args, int targetArgIndex, String consoleUsage) {
+        boolean hasTargetArg = args.length > targetArgIndex;
+        switch (recipientMode(sender instanceof Player, hasTargetArg)) {
+            case RESOLVE_TARGET -> {
+                Player target = PlayerLookup.resolveAllowingPartial(args[targetArgIndex]).orElse(null);
+                if (target == null) {
+                    sender.sendMessage(Component.text(
+                        PlayerLookup.noSuchPlayerMessage(args[targetArgIndex], PlayerLookup.onlineNames()),
+                        NamedTextColor.RED));
+                }
+                return target;
+            }
+            case SELF -> {
+                return (Player) sender;
+            }
+            default -> {
+                sender.sendMessage(Component.text("Console must specify a target player!", NamedTextColor.RED));
+                sender.sendMessage(Component.text(consoleUsage, NamedTextColor.YELLOW));
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Tells the sender (and, for a cross-player gift, the recipient) that an item changed
+     * hands. {@code prettyName} is the human-readable item name with underscores removed.
+     */
+    private void announceGift(CommandSender sender, Player recipient, String prettyName) {
+        if (recipient.equals(sender)) {
+            sender.sendMessage(Component.text("Given you a ", NamedTextColor.GREEN)
+                .append(Component.text(prettyName, NamedTextColor.GOLD))
+                .append(Component.text("!", NamedTextColor.GREEN)));
+            return;
+        }
+        sender.sendMessage(Component.text("Given a ", NamedTextColor.GREEN)
+            .append(Component.text(prettyName, NamedTextColor.GOLD))
+            .append(Component.text(" to " + recipient.getName() + "!", NamedTextColor.GREEN)));
+        recipient.sendMessage(Component.text("You have received a ", NamedTextColor.GREEN)
+            .append(Component.text(prettyName, NamedTextColor.GOLD))
+            .append(Component.text("!", NamedTextColor.GREEN)));
     }
 
     private boolean handleReloadCommand(CommandSender sender) {
@@ -170,20 +253,15 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("This command can only be used by players!", NamedTextColor.RED));
-            return true;
-        }
-
         if (args.length < 2) {
-            sender.sendMessage(Component.text("Usage: /copperkingdom blessed <weapon_type>", NamedTextColor.YELLOW));
+            sender.sendMessage(Component.text("Usage: /copperkingdom blessed <weapon_type> [player]", NamedTextColor.YELLOW));
             sender.sendMessage(Component.text("Available: copper_sword, copper_axe, copper_pickaxe", NamedTextColor.AQUA));
             return true;
         }
 
         String weaponName = args[1].toLowerCase();
         CopperWeapons.WeaponType weaponType;
-        
+
         try {
             weaponType = CopperWeapons.WeaponType.valueOf("COPPER_" + weaponName.toUpperCase().replace("COPPER_", ""));
         } catch (IllegalArgumentException e) {
@@ -191,38 +269,44 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        ItemStack weapon = CopperWeapons.createCopperWeapon(weaponType);
-        if (weapon != null) {
-            // Force blessed status
-            ItemMeta meta = weapon.getItemMeta();
-            if (meta != null) {
-                List<Component> lore = meta.lore();
-                if (lore == null) {
-                    lore = new ArrayList<>();
-                }
-                
-                lore.add(Component.text("✨ Blessed by Ancient Copper Magic ✨", NamedTextColor.GOLD));
-                lore.add(Component.text("Cleanses poison and wither from nearby allies", NamedTextColor.AQUA));
-                
-                meta.lore(lore);
-                weapon.setItemMeta(meta);
-            }
-            
-            player.getInventory().addItem(weapon);
-            sender.sendMessage(Component.text("Given you a blessed ", NamedTextColor.GREEN)
-                .append(Component.text(weaponName.replace("_", " "), NamedTextColor.GOLD))
-                .append(Component.text("!", NamedTextColor.GREEN)));
+        Player recipient = resolveRecipient(sender, args, 2, "Usage: /copperkingdom blessed <weapon_type> <player>");
+        if (recipient == null) {
+            return true;
         }
+
+        ItemStack weapon = CopperWeapons.createCopperWeapon(weaponType);
+        if (weapon == null) {
+            sender.sendMessage(Component.text("Failed to create item! Check the configuration.", NamedTextColor.RED));
+            return true;
+        }
+
+        // Force blessed status
+        ItemMeta meta = weapon.getItemMeta();
+        if (meta != null) {
+            List<Component> lore = meta.lore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+
+            lore.add(Component.text("✨ Blessed by Ancient Copper Magic ✨", NamedTextColor.GOLD));
+            lore.add(Component.text("Cleanses poison and wither from nearby allies", NamedTextColor.AQUA));
+
+            meta.lore(lore);
+            weapon.setItemMeta(meta);
+        }
+
+        recipient.getInventory().addItem(weapon);
+        announceGift(sender, recipient, "blessed " + weaponName.replace("_", " "));
 
         return true;
     }
 
     private void showHelp(CommandSender sender) {
         sender.sendMessage(Component.text("=== Copper Kingdom Commands ===", NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("/copperkingdom give <item>", NamedTextColor.YELLOW)
-            .append(Component.text(" - Give yourself a copper item", NamedTextColor.GRAY)));
-        sender.sendMessage(Component.text("/copperkingdom blessed <weapon>", NamedTextColor.YELLOW)
-            .append(Component.text(" - Give yourself a blessed copper weapon", NamedTextColor.GRAY)));
+        sender.sendMessage(Component.text("/copperkingdom give <item> [player]", NamedTextColor.YELLOW)
+            .append(Component.text(" - Give a copper item to yourself or another player", NamedTextColor.GRAY)));
+        sender.sendMessage(Component.text("/copperkingdom blessed <weapon> [player]", NamedTextColor.YELLOW)
+            .append(Component.text(" - Give a blessed copper weapon to yourself or another player", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("/copperkingdom test <type>", NamedTextColor.YELLOW)
             .append(Component.text(" - Test lore mechanics", NamedTextColor.GRAY)));
         sender.sendMessage(Component.text("/copperkingdom reload", NamedTextColor.YELLOW)
@@ -271,6 +355,16 @@ public class CopperKingdomCommand implements CommandExecutor, TabCompleter {
                 for (String testType : testTypes) {
                     if (testType.toLowerCase().startsWith(args[1].toLowerCase())) {
                         completions.add(testType);
+                    }
+                }
+            }
+        } else if (args.length == 3) {
+            // Optional target player for give/blessed
+            if (args[0].equalsIgnoreCase("give") || args[0].equalsIgnoreCase("blessed")) {
+                String partial = args[2].toLowerCase();
+                for (Player online : Bukkit.getOnlinePlayers()) {
+                    if (online.getName().toLowerCase().startsWith(partial)) {
+                        completions.add(online.getName());
                     }
                 }
             }

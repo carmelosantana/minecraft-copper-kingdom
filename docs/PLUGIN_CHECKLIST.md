@@ -37,6 +37,57 @@ Accordingly:
 
 ---
 
+## Change: `give`/`blessed` accept an optional player target — 2026-07-28 (v0.3.0)
+
+Merged to `main` from branch `claude/angry-pare-34f213` and released as **`v0.3.0`** (minor bump
+from `0.2.1` for a backward-compatible feature). `pom.xml` is `0.3.0`; the releasable JAR is
+`copper-kingdom-0.3.0.jar`.
+
+**What changed.** `/copperkingdom give <item> [player]` and `/copperkingdom blessed <weapon>
+[player]` now accept an optional target. With a target present the sender may be the console (or
+another plugin dispatching as console); without one, a player sender still self-gives and a console
+sender gets a friendly "Console must specify a target player!" instruction instead of the old
+"This command can only be used by players!" dead end. This mirrors the sibling pattern
+(`/curse trigger <mechanic> [player]`, `/gfbread give <type> <player> <amount>`). New
+`org.xpfarm.copperkingdom.util.PlayerLookup` is a per-plugin duplicate of the ecosystem helper
+(Floodgate-prefix-aware resolution + who-is-online failure message). Tab-completion now suggests
+online player names at the target position for `give` and `blessed`.
+
+- **Gate 4 (compatibility).** Compiles Java 25 / Paper 26.1.2 build 74 (`[debug release 25]`; the
+  dead `<source>/<target>21</target>` in `pom.xml` is overridden by `<maven.compiler.release>25`).
+  No new dependency, no `plugin.yml` `depend`/`softdepend` change. `api-version` left at `'1.21'`
+  — **not** raised in this change; it remains the follow-up the backfill already records. Geyser
+  relevance: `PlayerLookup` exists specifically because Bedrock/Floodgate accounts carry a `.`
+  username prefix and Bedrock clients get no tab-completion, so console/operator resolution of a
+  Bedrock target is handled and its failure names who is online.
+- **Gate 5 (external services).** Not applicable — no external integration added.
+- **Gate 6 (tests + build).** `mvn --batch-mode --no-transfer-progress clean verify` → **BUILD
+  SUCCESS, 15 tests, 0 failures**. This repo previously had **no `src/test` and no Surefire**;
+  `maven-surefire-plugin 3.1.2` was added (without it JUnit 5 is silently skipped and the build is
+  a false green) and three test classes added: `PlayerLookupTest` (candidate list + failure
+  message), `CopperKingdomCommandTest` (the four recipient-routing cases: self-give, give-to-other,
+  console-with-target, console-without-target), and `PluginDescriptorTest` (SnakeYAML parse +
+  every declared command/permission the code looks up). Shaded JAR inspected:
+  `target/copper-kingdom-0.3.0.jar` embeds a correct `plugin.yml` (version resolved, `api-version`
+  a quoted string, all five permissions), contains the new `PlayerLookup`/`CopperKingdomCommand`
+  classes, and bundles no server API or SnakeYAML.
+- **Gate 7a (single-plugin runtime).** Booted via `scripts/test-stack.sh up` on a fresh disposable
+  Legendary stack: Paper `Done (19.080s)`, real handshake `Paper 26.1.2 | protocol 775`,
+  `CopperKingdom` **green/enabled** alongside floodgate, Geyser-Spigot, ViaVersion. Exercised the
+  new console paths over RCON — all clean, no exceptions in logs:
+  - `copperkingdom give copper_sword` (console, no target) → `Console must specify a target player!`
+    + usage. **This is the bug the change fixes.**
+  - `copperkingdom give copper_sword Notch` (console, target, nobody online) → `No player matches
+    'Notch'; no players are online.` (resolve path runs cleanly).
+  - `copperkingdom blessed copper_axe Notch` → same resolve path for `blessed`.
+  - `copperkingdom give bogus_item Notch` → resolve runs first; friendly no-player message.
+
+  **Not reached here (needs a real client — gate 12 play-test obligation):** the self-give and
+  give-to-an-*online*-player success paths (item actually created and added to a live inventory),
+  the cross-player received-a-gift notification, and tab-completion of online names — no client
+  joins this headless stack by design. These are the only behaviors this change adds that a client
+  is required to observe.
+
 ## 1. Scope — NOT RECORDED
 
 - [ ] Status is explicitly recorded as active, experimental, or excluded. **NOT RECORDED at the

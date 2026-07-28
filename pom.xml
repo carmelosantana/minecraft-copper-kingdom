@@ -6,7 +6,7 @@
 
     <groupId>org.xpfarm</groupId>
     <artifactId>copper-kingdom</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -82,6 +82,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Surefire must be declared explicitly: the Maven distribution's default-bound
+                 version predates JUnit 5's JUnit Platform provider, so without this the
+                 src/test JUnit Jupiter tests are silently skipped and `mvn verify` reports a
+                 false green. Pinned to match the sibling plugins (e.g. curse). -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
             </plugin>
         </plugins>
         <resources>
